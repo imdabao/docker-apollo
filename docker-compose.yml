@@ -1,0 +1,20 @@
+version: '3.4'
+services: 
+    apollo-configservice:
+        image: apolloconfig/apollo-configservice:latest
+        depends_on: 
+            - apollo-db
+
+    apollo-adminservice:
+        image: apolloconfig/apollo-adminservice:latest
+        depends_on: 
+            - apollo-db
+
+    apollo-portal:
+        image: apolloconfig/apollo-portal:latest
+        depends_on: 
+            - apollo-db
+            - apollo-configservice
+
+    apollo-db:
+        image: mysql:5.7

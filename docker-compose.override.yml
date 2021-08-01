@@ -1,0 +1,62 @@
+version: '3.4'
+
+services: 
+    apollo-configservice:
+        container_name: apollo-configservice
+        environment: 
+            - JAVA_OPTS=-Xmx256m -Xms256m
+            - SPRING_DATASOURCE_URL=jdbc:mysql://apollo-db:3306/ApolloConfigDB?characterEncoding=utf8
+            - SPRING_DATASOURCE_USERNAME=root
+            - SPRING_DATASOURCE_PASSWORD=123456
+        ports:
+            - "8080:8080"
+        networks: 
+            - apollo_bridge
+
+    apollo-adminservice:
+        container_name: apollo-adminservice
+        environment: 
+            - JAVA_OPTS=-Xmx256m -Xms256m
+            - SPRING_DATASOURCE_URL=jdbc:mysql://apollo-db:3306/ApolloConfigDB?characterEncoding=utf8
+            - SPRING_DATASOURCE_USERNAME=root
+            - SPRING_DATASOURCE_PASSWORD=123456
+        ports:
+            - "8090:8090"
+        networks: 
+            - apollo_bridge
+    
+    apollo-portal:
+        container_name: apollo-portal
+        environment: 
+            - JAVA_OPTS=-Xmx256m -Xms256m
+            - SPRING_DATASOURCE_URL=jdbc:mysql://apollo-db:3306/ApolloPortalDB?characterEncoding=utf8
+            - SPRING_DATASOURCE_USERNAME=root
+            - SPRING_DATASOURCE_PASSWORD=123456
+            - APOLLO_PORTAL_ENVS=dev,pro
+            - DEV_META=http://apollo-configservice:8080
+            - PRO_META=http://apollo-configservice:8080
+        ports:
+            - "8070:8070"
+        networks: 
+            - apollo_bridge
+
+    apollo-db:
+        container_name: apollo-db
+        environment: 
+            - TZ=Asia/Shanghai
+            - MYSQL_ROOT_PASSWORD=123456
+        command: "--default-authentication-plugin=mysql_native_password"
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./sql:/docker-entrypoint-initdb.d
+            - data-volume:/var/lib/mysql
+        networks: 
+            - apollo_bridge
+
+networks: 
+    apollo_bridge:
+        driver: bridge
+
+volumes: 
+    data-volume:
