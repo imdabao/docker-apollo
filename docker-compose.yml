@@ -1,17 +1,18 @@
 version: '3.4'
 services: 
     apollo-configservice:
-        image: apolloconfig/apollo-configservice:latest
+        image: apolloconfig/apollo-configservice:1.9.1
         depends_on: 
             - apollo-db
 
     apollo-adminservice:
-        image: apolloconfig/apollo-adminservice:latest
+        image: apolloconfig/apollo-adminservice:1.9.1
         depends_on: 
             - apollo-db
+            - apollo-configservice
 
     apollo-portal:
-        image: apolloconfig/apollo-portal:latest
+        image: apolloconfig/apollo-portal:1.9.1
         depends_on: 
             - apollo-db
             - apollo-configservice
